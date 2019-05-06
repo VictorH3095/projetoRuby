@@ -11,7 +11,7 @@ class Adversario
  
  def bater(alvo)
    if alvo.esta_vivo?
-     self.ataque = 1 
+     self.ataque = 1 #custa uma tentativa ao jogador
      puts "O jogador fez #{self.ataque} tentativa"
 
      alvo.energia -= self.ataque
@@ -24,31 +24,26 @@ class Adversario
  end  
 
  def esta_vivo? 
-   
+   # true if self.energia > 0 #esta vivo se energia > 0
    true if self.contador1 < 2
  end
 end
 
 
 
-
-
-
-
-
-
 class Jogador
 
-attr_accessor :energia, :var1, :idJogador, :ataque, :vivo, :numero_de_mortos, :pontuacao, :contadorJogadas, :contadorFrames, :contadorStrike  
+attr_accessor :energia, :var1, :var2, :var3, :idJogador, :ataque, :vivo, :numero_de_mortos, :pontuacao, :contadorJogadas, :contadorFrames, :contadorStrike  
 def initialize
    self.energia = 10 
    self.vivo = true
-   self.numero_de_mortos = 0
    self.pontuacao = 0
    self.contadorJogadas = 0
    self.contadorFrames = 0
    self.contadorStrike = 0
-self.var1 = 0
+   self.var1 = 0
+   self.var2 = 0
+   self.var3 = 0
    self.idJogador = Random.rand(100) 
    
  end
@@ -56,7 +51,8 @@ self.var1 = 0
 def bater(alvo)
    if alvo.esta_vivo?
      self.contadorJogadas += 1
-     self.ataque = Random.rand(11) 
+   
+    self.ataque = Random.rand(alvo.energia + 1)
      puts "\nA quantidade de pinos derrubados pelo jogador #{self.idJogador}  e #{self.ataque}"
 
      alvo.energia -= self.ataque 
@@ -64,28 +60,34 @@ def bater(alvo)
     
      puts "Valor de contadorJogadas e #{self.contadorJogadas}"
 
-     if self.ataque < 10 && contadorJogadas == 1
+     if self.ataque < 10 && contadorJogadas == 1 #jogada 1 sem strike
         self.var1 = 0
         self.var1 += self.ataque
+        
         puts"Valor de var1 e #{self.var1}"
      end
      
 
-     if self.var1 < 10 && contadorJogadas == 2
+     if self.var1 < 10 && contadorJogadas == 2   #jogada 2 sem strike
          self.var1 += self.ataque
          puts"Valor de var1 e #{self.var1}"
+         self.var3 = self.var1   
+         puts"Valor de var3 e #{self.var3}"
+          puts"Valor de var2 aq e #{self.var2}"
      end
 
 
 
-     if self.var1 >=10 && contadorJogadas == 2
+     if self.var1 >=10 && contadorJogadas == 2 #jogada 2 e strike lance 1
      puts"Var1 e maior que 10"
      alvo.contador1 -= 1
      self.energia += 1
      puts "Recebeu a tentativa extra do spare de volta + 1 : #{self.energia}"
      end
-     
-     
+
+     if self.var1 >= 10 && contadorJogadas == 2
+     alvo.energia = 10
+     end
     
       
      
@@ -95,7 +97,9 @@ def bater(alvo)
      alvo.contador1 -= 1
      self.contadorStrike = 1
      self.energia += 2
+     self.var2 = 10
      puts "Recebeu as tentativas extras de volta + 2 : #{self.energia}"
+     puts "Recebeu os 10 pinos extras de volta"
      end
  
      
@@ -105,17 +109,19 @@ if self.contadorStrike == 1 && self.contadorJogadas == 2
 end
 
 if self.contadorStrike == 1 && self.contadorJogadas == 3 
+       
      puts "Mensagem de jogada extra strike terceiro lance"
      alvo.energia = 0
 end
 
-     if self.contadorJogadas == 2 && self.var1 < 10
-        self.contadorJogadas = 0
+     if self.contadorJogadas == 2 && self.var2 < 10 && self.var3 < 10
+        self.contadorJogadas = 0 #zera aq
      end
+      
 
 
      if self.contadorJogadas == 3
-        self.contadorJogadas = 0
+        self.contadorJogadas = 0 #zera aq
      end
 
     
@@ -125,7 +131,7 @@ end
      alvo.energia = 0
      end
      
-   
+ 
    else
    puts "Os pinos foram derrubados\n\n" 
    
@@ -136,8 +142,7 @@ self.numero_de_mortos+=1
 end
 end
  def esta_vivo? 
-   true if self.energia > 0
-  
+   true if self.energia > 0 
  end
 end 
 
@@ -158,7 +163,7 @@ puts adversario2.inspect
 
 while adversario1.esta_vivo? && jogador1.esta_vivo?
 jogador1.bater(adversario1)
-puts "A quantidade de pinos sobrando e #{adversario1.energia}" if adversario1.esta_vivo?  
+puts "A quantidade de pinos sobrando e #{adversario1.energia}" if adversario1.esta_vivo? 
 if adversario1.esta_vivo?
 adversario1.bater(jogador1)
 print "A quantidade de tentativas restantes e #{jogador1.energia}" 
@@ -171,7 +176,7 @@ end
 
 while adversario2.esta_vivo? && jogador2.esta_vivo?
 jogador2.bater(adversario2)
-puts "A quantidade de pinos sobrando e #{adversario2.energia}" if adversario2.esta_vivo?  
+puts "A quantidade de pinos sobrando e #{adversario2.energia}" if adversario2.esta_vivo? 
 if adversario2.esta_vivo?
 adversario2.bater(jogador2)
 print "A quantidade de tentativas restantes e #{jogador2.energia}" 
