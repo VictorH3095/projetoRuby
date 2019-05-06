@@ -199,10 +199,6 @@ puts '' #mesma funcao do \n
 end
 end
 end
-
-break if nao_quer_jogar? #para o loop externo
-end
-
 puts 'Fim de jogo'
 puts 
 puts "Pontuacao final do jogador 1 #{jogador1.pontuacao} pontos"
@@ -214,4 +210,8 @@ print "Jogador 1 venceu\n"
 else
 print "Jogador 2 venceu\n" 
 end
+break if nao_quer_jogar? #para o loop externo
+
+end
+
 
