@@ -35,7 +35,7 @@ end
 
 class Jogador
 
-attr_accessor :energia, :var1, :var2, :var3, :idJogador, :ataque, :vivo, :numero_de_mortos, :pontuacao, :contadorJogadas, :contadorFrames, :contadorStrike  
+attr_accessor :energia, :var1, :pegaValor, :var2, :var3, :idJogador, :ataque, :vivo, :numero_de_mortos, :pontuacao, :contadorJogadas, :contadorFrames, :contadorStrike  
 def initialize
    self.energia = 10 
    self.vivo = true
@@ -46,11 +46,15 @@ def initialize
    self.var1 = 0
    self.var2 = 0
    self.var3 = 0
+ self.pegaValor = 0
    self.idJogador = Random.rand(100) 
    
  end
-###############################################
-def bater(alvo)
+####################
+
+
+def jogadaMaquina(alvo)
+    
    if alvo.esta_vivo?
      self.contadorJogadas += 1
    
@@ -60,6 +64,139 @@ def bater(alvo)
      alvo.energia -= self.ataque 
      self.pontuacao += self.ataque
     
+     puts "Valor de contadorJogadas e #{self.contadorJogadas}"
+
+     if self.ataque < 10 && contadorJogadas == 1 #jogada 1 sem strike
+        self.var1 = 0
+        self.var1 += self.ataque
+        
+        puts"Valor de var1 e #{self.var1}"
+     end
+     
+
+     if self.var1 < 10 && contadorJogadas == 2   #jogada 2 sem strike
+         self.var1 += self.ataque
+         puts"Valor de var1 e #{self.var1}"
+         self.var3 = self.var1   
+         puts"Valor de var3 e #{self.var3}"
+          puts"Valor de var2 aq e #{self.var2}"
+     end
+
+
+
+     if self.var1 >=10 && contadorJogadas == 2 
+     puts"Var1 e maior que 10"
+     alvo.contador1 -= 1
+     self.energia += 1 ##self.energia aumenta aq
+     puts "Recebeu a tentativa extra do spare de volta + 1 : #{self.energia}"
+     end
+
+     if self.var1 >= 10 && contadorJogadas == 2
+     alvo.energia = 10
+     end
+    
+      
+     
+     if self.ataque == 10 && self.contadorJogadas == 1
+     puts "Mensagem de strike primeiro lance"
+     alvo.energia = 10
+     alvo.contador1 -= 1
+     self.contadorStrike = 1
+    
+     self.var2 = 10
+     puts "Recebeu as tentativas extras de volta + 2 : #{self.energia}"
+     puts "Recebeu os 10 pinos extras de volta"
+     end
+
+    if alvo.energia == 0 && self.contadorJogadas == 1
+    self.contadorJogadas == 0
+    end
+ 
+     
+if self.contadorStrike == 1 && self.contadorJogadas == 2 
+     puts "Mensagem de jogada extra strike segundo lance"
+     alvo.energia = 10
+     self.energia = self.energia + 1 ##self.energia aumenta aq
+end
+
+if self.contadorStrike == 1 && self.contadorJogadas == 3 
+       
+     puts "Mensagem de jogada extra strike terceiro lance"
+     alvo.energia = 0
+end
+
+     if self.contadorJogadas == 2 && self.var2 < 10 && self.var3 < 10
+        self.contadorJogadas = 0 #zera aq
+     end
+      
+
+
+     if self.contadorJogadas == 3
+        self.contadorJogadas = 0 #zera aq
+     end
+
+   ####################################################### 
+
+     if alvo.energia <= 0
+     puts "O jogador derrubou todos os pinos"
+     alvo.energia = 0
+     end
+     
+ 
+   else
+   puts "Os pinos foram derrubados\n\n" 
+   
+   end  
+ unless alvo.esta_vivo?
+puts "Os pinos foram derrubados\n\n"
+self.numero_de_mortos+=1
+end
+end
+###############################################
+def bater(alvo)
+   if alvo.esta_vivo?
+     self.contadorJogadas += 1
+    
+ puts"\n Digite o valor do arremesso, 1 para fraco (de 1 a 4 pinos), 2 para forte(de 0 a 9 pinos) ou 3 para jogar com efeito (pode acertar 0 ou 10 pinos)"
+    chute = gets.strip.to_i
+    puts "\nValor do chute e #{chute}"
+    
+if chute == 1
+    #self.ataque = Random.rand(alvo.energia + 1)
+  if alvo.energia > 4
+   self.ataque = Random.rand(1..4)
+  else
+   self.ataque = Random.rand(1..alvo.energia)
+  end
+end
+   
+ if chute == 2
+    #self.ataque = Random.rand(alvo.energia + 1)
+    if alvo.energia == 10
+    self.ataque = Random.rand(0..9)
+    else
+    self.ataque = Random.rand(0..alvo.energia)
+    end
+end
+   
+ if chute == 3
+    if alvo.energia < 10
+    self.ataque = 0
+    else
+    self.pegaValor = Random.rand(0..1)
+    end
+    if self.pegaValor == 0
+    self.ataque = 0
+    else
+    self.ataque = 10
+    end
+ end
+     
+puts "\nA quantidade de pinos derrubados pelo jogador #{self.idJogador}  e #{self.ataque}"
+
+     alvo.energia -= self.ataque 
+     self.pontuacao += self.ataque
+     
      puts "Valor de contadorJogadas e #{self.contadorJogadas}"
 
      if self.ataque < 10 && contadorJogadas == 1 #jogada 1 sem strike
@@ -190,7 +327,7 @@ end
 
 
 while adversario2.esta_vivo? && jogador2.esta_vivo?
-jogador2.bater(adversario2)
+jogador2.jogadaMaquina(adversario2)
 puts "A quantidade de pinos sobrando e #{adversario2.energia}" if adversario2.esta_vivo? 
 if adversario2.esta_vivo?
 adversario2.bater(jogador2)
