@@ -5,8 +5,10 @@ Jogo de boliche em Ruby
 Para jogar é necessário que:
 > O usuário tenha conhecimento prévio das regras de spare e strike do boliche.
 
-## Nome e E-mail
+## Nome
 Nome:
 > Victor Hugo da Costa Piana
+
+## E-mail
 E-mail:
 > victor.cpiana@gmail.com
