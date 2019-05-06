@@ -31,6 +31,8 @@ end
 
 
 
+
+
 class Jogador
 
 attr_accessor :energia, :var1, :var2, :var3, :idJogador, :ataque, :vivo, :numero_de_mortos, :pontuacao, :contadorJogadas, :contadorFrames, :contadorStrike  
@@ -47,7 +49,7 @@ def initialize
    self.idJogador = Random.rand(100) 
    
  end
-
+###############################################
 def bater(alvo)
    if alvo.esta_vivo?
      self.contadorJogadas += 1
@@ -78,10 +80,10 @@ def bater(alvo)
 
 
 
-     if self.var1 >=10 && contadorJogadas == 2 #jogada 2 e strike lance 1
+     if self.var1 >=10 && contadorJogadas == 2 
      puts"Var1 e maior que 10"
      alvo.contador1 -= 1
-     self.energia += 1
+     self.energia += 1 ##self.energia aumenta aq
      puts "Recebeu a tentativa extra do spare de volta + 1 : #{self.energia}"
      end
 
@@ -96,16 +98,21 @@ def bater(alvo)
      alvo.energia = 10
      alvo.contador1 -= 1
      self.contadorStrike = 1
-     self.energia += 2
+    
      self.var2 = 10
      puts "Recebeu as tentativas extras de volta + 2 : #{self.energia}"
      puts "Recebeu os 10 pinos extras de volta"
      end
+
+    if alvo.energia == 0 && self.contadorJogadas == 1
+    self.contadorJogadas == 0
+    end
  
      
 if self.contadorStrike == 1 && self.contadorJogadas == 2 
      puts "Mensagem de jogada extra strike segundo lance"
      alvo.energia = 10
+     self.energia = self.energia + 1 ##self.energia aumenta aq
 end
 
 if self.contadorStrike == 1 && self.contadorJogadas == 3 
@@ -124,7 +131,7 @@ end
         self.contadorJogadas = 0 #zera aq
      end
 
-    
+   ####################################################### 
 
      if alvo.energia <= 0
      puts "O jogador derrubou todos os pinos"
@@ -146,7 +153,15 @@ end
  end
 end 
 
+def nao_quer_jogar?
+  puts 'Deseja jogar novamente? (S/N)'
+  quero_jogar = gets.strip.upcase
+  quero_jogar.casecmp('N').zero?
+end
 
+
+
+loop do
 
 jogador1 = Jogador.new
 puts jogador1.inspect
@@ -183,6 +198,9 @@ print "A quantidade de tentativas restantes e #{jogador2.energia}"
 puts '' #mesma funcao do \n
 end
 end
+end
+
+break if nao_quer_jogar? #para o loop externo
 end
 
 puts 'Fim de jogo'
